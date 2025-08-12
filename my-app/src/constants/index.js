@@ -1,8 +1,14 @@
+// export const MENU_ITEMS = [
+//   { id: 'dashboard', label: 'Dashboard' },
+//   { id: 'add-job', label: 'Add Job' },
+//   { id: 'settings', label: 'Settings' }
+// ];
 export const MENU_ITEMS = [
-  { id: 'dashboard', label: 'Dashboard' },
-  { id: 'add-job', label: 'Add Job' },
-  { id: 'settings', label: 'Settings' }
+  { id: 'dashboard', label: 'Dashboard', path: '/dashboard' },
+  { id: 'add-job', label: 'Add Job', path: '/add-job' },
+  { id: 'settings', label: 'Settings', path: '/settings' }
 ];
+
 
 export const JOB_STATUS_CLASSES = {
   applied: 'bg-green-100 text-green-800',
@@ -19,12 +25,14 @@ export const getStatusColor = (status) => {
 export const JOB_STATUS_MAP = {
   1: 'Applied',
   2: 'Interview',
-  3: 'Rejected',
+  3: 'Offer',
+  4: 'Rejected',
 };
 
 export const JOB_STATUS_OPTIONS = [
   'All Status',
   'Applied',
   'Interview',
+  'Offer',
   'Rejected',
 ];
