@@ -63,21 +63,13 @@ export default function AddJobPage() {
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", marginTop: 60 }}>
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          background: "#fff",
-          padding: 32,
-          borderRadius: 12,
-          boxShadow: "0 4px 24px #0001",
-          minWidth: 400,
-        }}
-      >
-        <h2 style={{ marginBottom: 24 }}>Add Job</h2>
-        <div style={{ marginBottom: 16 }}>
-          <label>
-            <b>Company</b>
+    <div className="flex justify-center mt-16">
+      <div className="bg-white p-8 rounded-xl shadow-2xl min-w-96 border border-black">
+        <h2 className="mb-6 text-2xl font-semibold">Add Job</h2>
+        
+        <div className="mb-4">
+          <label className="block">
+            <span className="font-bold">Company</span>
             <input
               type="text"
               name="company"
@@ -85,13 +77,14 @@ export default function AddJobPage() {
               onChange={handleChange}
               placeholder="e.g. Google"
               required
-              style={{ width: "100%", marginTop: 4, padding: 8 }}
+              className="w-full mt-1 p-2 border border-black-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </label>
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <label>
-            <b>Position</b>
+        
+        <div className="mb-4">
+          <label className="block">
+            <span className="font-bold">Position</span>
             <input
               type="text"
               name="title"
@@ -99,31 +92,33 @@ export default function AddJobPage() {
               onChange={handleChange}
               placeholder="e.g. Frontend Developer"
               required
-              style={{ width: "100%", marginTop: 4, padding: 8 }}
+              className="w-full mt-1 p-2 border border-black-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </label>
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <label>
-            <b>Location</b>
+        
+        <div className="mb-4">
+          <label className="block">
+            <span className="font-bold">Location</span>
             <input
               type="text"
               name="location"
               value={form.location}
               onChange={handleChange}
               placeholder="e.g. HaNoi"
-              style={{ width: "100%", marginTop: 4, padding: 8 }}
+              className="w-full mt-1 p-2 border border-black-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </label>
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <label>
-            <b>Status</b>
+        
+        <div className="mb-4">
+          <label className="block">
+            <span className="font-bold">Status</span>
             <select
               name="status"
               value={form.status}
               onChange={handleChange}
-              style={{ width: "100%", marginTop: 4, padding: 8 }}
+              className="w-full mt-1 p-2 border border-black-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               {statusOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -133,54 +128,48 @@ export default function AddJobPage() {
             </select>
           </label>
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <label>
-            <b>Applied Date</b>
+        
+        <div className="mb-4">
+          <label className="block">
+            <span className="font-bold">Applied Date</span>
             <input
               type="date"
               name="appliedDate"
               value={form.appliedDate}
               onChange={handleChange}
-              style={{ width: "100%", marginTop: 4, padding: 8 }}
+              className="w-full mt-1 p-2 border border-black-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </label>
         </div>
-        <div style={{ marginBottom: 24 }}>
-          <label>
-            <b>Notes</b>
+        
+        <div className="mb-6">
+          <label className="block">
+            <span className="font-bold">Notes</span>
             <textarea
               name="notes"
               value={form.notes}
               onChange={handleChange}
               placeholder="e.g. Interview scheduled next Monday..."
               rows={3}
-              style={{ width: "100%", marginTop: 4, padding: 8 }}
+              className="w-full mt-1 p-2 border border-black-200 rounded resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </label>
         </div>
+        
         <button
-          type="submit"
+          onClick={handleSubmit}
           disabled={loading}
-          style={{
-            width: "100%",
-            background: "#5542e0",
-            color: "#fff",
-            padding: 12,
-            border: "none",
-            borderRadius: 6,
-            fontWeight: 600,
-            fontSize: 16,
-            cursor: "pointer",
-          }}
+          className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white p-3 rounded-md font-semibold text-base cursor-pointer transition-colors duration-200"
         >
           {loading ? "Submitting..." : "Submit Job"}
         </button>
+        
         {success && (
-          <div style={{ color: "green", marginTop: 16 }}>
+          <div className="text-green-600 mt-4 text-center font-medium">
             Job submitted successfully!
           </div>
         )}
-      </form>
+      </div>
     </div>
   );
 }

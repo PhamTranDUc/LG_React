@@ -11,7 +11,7 @@ const MainLayout = ({ children }) => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header toggleSidebar={toggleSidebar} />
 
-      <div className="flex flex-1 min-h-0">
+      <div className="flex flex-1 min-h-screen">
         <Sidebar sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
 
         <main className="flex-1 overflow-auto p-8">
