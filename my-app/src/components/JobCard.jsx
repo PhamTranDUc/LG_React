@@ -4,7 +4,7 @@ import { getStatusColor } from '../constants/index';
 
 const JobCard = ({ job, onEdit, onDelete }) => {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className="bg-ưhite rounded-lg shadow-sm border border-black-200 p-6 hover:shadow-md transition-shadow">
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-1">{job.title}</h3>
         <p className="text-gray-600 mb-3">{job.company}</p>

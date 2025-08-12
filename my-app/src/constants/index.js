@@ -1,8 +1,3 @@
-// export const MENU_ITEMS = [
-//   { id: 'dashboard', label: 'Dashboard' },
-//   { id: 'add-job', label: 'Add Job' },
-//   { id: 'settings', label: 'Settings' }
-// ];
 export const MENU_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', path: '/dashboard' },
   { id: 'add-job', label: 'Add Job', path: '/add-job' },
