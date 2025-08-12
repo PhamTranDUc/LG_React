@@ -24,12 +24,9 @@ const jobSlice = createSlice({
     deleteJob(state, action) {
       state.jobs = state.jobs.filter((job) => job.id !== action.payload);
     },
-    setActiveItem(state, action) {
-      state.activeItem = action.payload;
-    },
   },
 });
 
-export const { setSearchTerm, setStatusFilter, setJobs, deleteJob, setActiveItem } =
+export const { setSearchTerm, setStatusFilter, setJobs, deleteJob } =
   jobSlice.actions;
 export default jobSlice.reducer;
