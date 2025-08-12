@@ -1,11 +1,54 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import JobCard from '../components/JobCard';
 import { setSearchTerm, setStatusFilter, setJobs, deleteJob } from '../store/slice/jobSlice';
 import { fetchJobsApi } from '../api/index';
 import { JOB_STATUS_MAP, JOB_STATUS_OPTIONS } from '../constants/index';
+
+const Select = ({ value, onChange, options, placeholder = "Select an option" }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSelect = (option) => {
+    onChange(option);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-4 py-3.5 border border-black-300 rounded-md bg-white "
+      >
+        <span className="text-gray-900">{value || placeholder}</span>
+        <ChevronDown 
+          className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : ''
+          }`} 
+        />
+      </button>
+      
+      {isOpen && (
+        <div className="absolute z-10 w-full mt-1 bg-white border border-black-300 rounded-md shadow-lg max-h-60 overflow-auto">
+          {options.map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => handleSelect(option)}
+              className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${
+                value === option ? 'bg-indigo-50 text-indigo-600' : 'text-gray-900'
+              }`}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const DashboardPage = () => {
   const dispatch = useDispatch();
@@ -26,6 +69,13 @@ const DashboardPage = () => {
         console.error('Failed to fetch jobs', err);
       });
   }, [dispatch]);
+
+  useEffect(() => {
+    const handleClickOutside = () => {
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   const filteredJobs = jobs.filter(job => {
     const matchesSearch =
@@ -67,16 +117,14 @@ const DashboardPage = () => {
           />
         </div>
         
-        <div className="w-full sm:w-auto sm:min-w-[140px]">
-          <select
+        <div className="w-full sm:w-auto sm:min-w-35">
+          <Select
             value={statusFilter}
-            onChange={(e) => dispatch(setStatusFilter(e.target.value))}
-            className="w-full appearance-none px-4 py-3.5 pr-8 border border-black-300 rounded-md bg-white focus:ring-indigo-500 focus:border-transparent cursor-pointer"
-          >
-            {JOB_STATUS_OPTIONS.map(option => (
-              <option key={option} value={option}>{option}</option>
-            ))}
-          </select>
+            onChange={(value) => dispatch(setStatusFilter(value))}
+            options={JOB_STATUS_OPTIONS}
+            placeholder="Select Status"
+            className="border-2 border-black-300 border-indigo-500 rounded-md"
+          />
         </div>
       </div>
 
