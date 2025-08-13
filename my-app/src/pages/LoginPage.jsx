@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { loginSuccess } from "../store/slice/authSlice";
 import { useNavigate } from "react-router-dom";
 import { loginApi } from "../api/index"; 
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,21 +22,24 @@ export default function LoginPage() {
     const { email, password } = formData;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) { alert("Vui lòng nhập email"); return; }
-    if (!emailRegex.test(email)) { alert("Email không hợp lệ"); return; }
-    if (!password) { alert("Vui lòng nhập mật khẩu"); return; }
-    if (password.length < 6) { alert("Mật khẩu phải có ít nhất 6 ký tự"); return; }
+    if (!email) { toast.error("Vui lòng nhập email"); return; }
+    if (!emailRegex.test(email)) { toast.error("Email không hợp lệ"); return; }
+    if (!password) { toast.error("Vui lòng nhập mật khẩu"); return; }
+    if (password.length < 6) { toast.error("Mật khẩu phải có ít nhất 6 ký tự"); return; }
 
     setLoading(true);
     try {
       const response = await loginApi({ email, password });
       const role = response.data; 
       dispatch(loginSuccess({ email, role }));
-      alert(`Đăng nhập thành công! Role: ${role}`);
-      navigate("/dashboard");
+
+      toast.success(`Đăng nhập thành công! Role: ${role}`, {
+        autoClose: 3000, 
+        onClose: () => navigate("/dashboard")
+      });
     } catch (error) {
       console.error(error);
-      alert("Email hoặc mật khẩu không đúng!");
+      toast.error("Email hoặc mật khẩu không đúng!");
     } finally {
       setLoading(false);
     }
