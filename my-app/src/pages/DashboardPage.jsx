@@ -24,9 +24,7 @@ const Select = ({ value, onChange, options, placeholder = "Select an option" }) 
       >
         <span className="text-gray-900">{value || placeholder}</span>
         <ChevronDown 
-          className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
-            isOpen ? 'rotate-180' : ''
-          }`} 
+          className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
         />
       </button>
       
@@ -37,9 +35,7 @@ const Select = ({ value, onChange, options, placeholder = "Select an option" }) 
               key={option}
               type="button"
               onClick={() => handleSelect(option)}
-              className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${
-                value === option ? 'bg-indigo-50 text-indigo-600' : 'text-gray-900'
-              }`}
+              className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${value === option ? 'bg-indigo-50 text-indigo-600' : 'text-gray-900'}`}
             >
               {option}
             </button>
@@ -50,10 +46,37 @@ const Select = ({ value, onChange, options, placeholder = "Select an option" }) 
   );
 };
 
+const Pagination = ({ totalPages, currentPage, onPageChange }) => {
+  if (totalPages <= 1) return null;
+
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  return (
+    <div className="flex justify-center items-center mt-6 gap-2">
+      {pages.map(page => (
+        <button
+          key={page}
+          onClick={() => onPageChange(page)}
+          className={`px-3 py-1 rounded-md border ${
+            currentPage === page
+              ? 'bg-indigo-600 text-white border-indigo-600'
+              : 'bg-white text-gray-700 border-gray-300'
+          }`}
+        >
+          {page}
+        </button>
+      ))}
+    </div>
+  );
+};
+
 const DashboardPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { jobs, searchTerm, statusFilter } = useSelector(state => state.job);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
   useEffect(() => {
     fetchJobsApi()
@@ -70,13 +93,6 @@ const DashboardPage = () => {
       });
   }, [dispatch]);
 
-  useEffect(() => {
-    const handleClickOutside = () => {
-    };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
-
   const filteredJobs = jobs.filter(job => {
     const matchesSearch =
       job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -88,9 +104,14 @@ const DashboardPage = () => {
     return matchesSearch && matchesStatus;
   });
 
+  const indexOfLastJob = currentPage * itemsPerPage;
+  const indexOfFirstJob = indexOfLastJob - itemsPerPage;
+  const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
+
   const handleDelete = (jobId) => dispatch(deleteJob(jobId));
   const handleAddJob = () => navigate('/add-job');
-const handleEdit = (job) => navigate('/add-job', { state: { job } });
+  const handleEdit = (job) => navigate('/add-job', { state: { job } });
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -129,7 +150,7 @@ const handleEdit = (job) => navigate('/add-job', { state: { job } });
       </div>
 
       <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-        {filteredJobs.map((job) => (
+        {currentJobs.map((job) => (
           <JobCard
             key={job.id}
             job={job}
@@ -151,6 +172,12 @@ const handleEdit = (job) => navigate('/add-job', { state: { job } });
           </button>
         </div>
       )}
+
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 };

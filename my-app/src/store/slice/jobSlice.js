@@ -1,4 +1,3 @@
-// store/slice/jobSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {

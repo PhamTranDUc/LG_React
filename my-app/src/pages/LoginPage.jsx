@@ -1,16 +1,15 @@
-// src/pages/LoginPage.jsx
-import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
-import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../store/slice/authSlice';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../store/slice/authSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: '',
+    email: "",
+    password: "",
+    name: "",
   });
 
   const dispatch = useDispatch();
@@ -19,22 +18,37 @@ export default function LoginPage() {
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = () => {
-    if (!formData.email || !formData.password) {
-      alert('Vui lòng nhập đủ thông tin');
+    const { email, password } = formData;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email) {
+      alert("Vui lòng nhập email");
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      alert("Email không hợp lệ");
       return;
     }
 
-    const role = formData.email === 'admin@test.com' ? 'admin' : 'user';
+    if (!password) {
+      alert("Vui lòng nhập mật khẩu");
+      return;
+    }
+    if (password.length < 6) {
+      alert("Mật khẩu phải có ít nhất 6 ký tự");
+      return;
+    }
 
-    dispatch(loginSuccess({ email: formData.email, role }));
+    const role = email === "admin@test.com" ? "admin" : "user";
 
+    dispatch(loginSuccess({ email, role }));
     alert(`Đăng nhập thành công! Role: ${role}`);
-    navigate('/dashboard');
+    navigate("/dashboard");
   };
 
   return (
@@ -82,7 +96,11 @@ export default function LoginPage() {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-700 transition-colors"
             >
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
             </button>
           </div>
         </div>
