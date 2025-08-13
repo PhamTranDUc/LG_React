@@ -15,7 +15,7 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
   return (
     <>
       <div
-        className={`fixed inset-0 bg-black bg-opacity-20 z-30 md:hidden transition-opacity duration-300
+        className={`fixed inset-x-0 top-16 bottom-0 bg-black bg-opacity-20 z-30 md:hidden transition-opacity duration-300
         ${sidebarOpen ? "opacity-50 visible" : "opacity-0 invisible"}`}
         onClick={toggleSidebar}
         aria-hidden="true"
@@ -88,16 +88,10 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
                     <div
                       className={`
                         w-2 h-2 rounded-full transition-all duration-200
-                        ${
-                          isActive
-                            ? "bg-white"
-                            : "bg-gray-400 group-hover:bg-indigo-500"
-                        }
+                        ${isActive ? "bg-white" : "bg-gray-400 group-hover:bg-indigo-500"}
                       `}
                     />
-                    <span className="font-medium relative z-10">
-                      {item.label}
-                    </span>
+                    <span className="font-medium relative z-10">{item.label}</span>
 
                     {!isActive && (
                       <div

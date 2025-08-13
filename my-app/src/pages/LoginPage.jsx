@@ -3,51 +3,42 @@ import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../store/slice/authSlice";
 import { useNavigate } from "react-router-dom";
+import { loginApi } from "../api/index"; 
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const { email, password } = formData;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-      alert("Vui lòng nhập email");
-      return;
-    }
-    if (!emailRegex.test(email)) {
-      alert("Email không hợp lệ");
-      return;
-    }
+    if (!email) { alert("Vui lòng nhập email"); return; }
+    if (!emailRegex.test(email)) { alert("Email không hợp lệ"); return; }
+    if (!password) { alert("Vui lòng nhập mật khẩu"); return; }
+    if (password.length < 6) { alert("Mật khẩu phải có ít nhất 6 ký tự"); return; }
 
-    if (!password) {
-      alert("Vui lòng nhập mật khẩu");
-      return;
+    setLoading(true);
+    try {
+      const response = await loginApi({ email, password });
+      const role = response.data; 
+      dispatch(loginSuccess({ email, role }));
+      alert(`Đăng nhập thành công! Role: ${role}`);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      alert("Email hoặc mật khẩu không đúng!");
+    } finally {
+      setLoading(false);
     }
-    if (password.length < 6) {
-      alert("Mật khẩu phải có ít nhất 6 ký tự");
-      return;
-    }
-
-    const role = email === "admin@test.com" ? "admin" : "user";
-
-    dispatch(loginSuccess({ email, role }));
-    alert(`Đăng nhập thành công! Role: ${role}`);
-    navigate("/dashboard");
   };
 
   return (
@@ -95,20 +86,17 @@ export default function LoginPage() {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-700 transition-colors"
             >
-              {showPassword ? (
-                <EyeOff className="h-5 w-5" />
-              ) : (
-                <Eye className="h-5 w-5" />
-              )}
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
             </button>
           </div>
         </div>
 
         <button
           onClick={handleSubmit}
-          className="w-full mt-6 bg-blue-500 text-white py-3 px-4 rounded-xl font-semibold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transform hover:scale-105 transition-all duration-300 shadow-lg"
+          disabled={loading}
+          className={`w-full mt-6 bg-blue-500 text-white py-3 px-4 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400 transform transition-all duration-300 shadow-lg ${loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600 hover:scale-105"}`}
         >
-          Đăng Nhập
+          {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
         </button>
       </div>
     </div>

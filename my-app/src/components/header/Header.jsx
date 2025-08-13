@@ -6,17 +6,14 @@ const Header = ({ toggleSidebar }) => {
   const handleSidebarToggle = () => {
     const button = document.getElementById('sidebar-toggle');
     button?.classList.add('animate-pulse');
-    setTimeout(() => {
-      button?.classList.remove('animate-pulse');
-    }, 200);
-    
+    setTimeout(() => button?.classList.remove('animate-pulse'), 200);
     toggleSidebar();
   };
 
   return (
-    <header className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white 
-                     shadow-lg relative z-50">
-      <div className="px-5 py-3">
+    <header className="fixed top-0 left-0 right-0 h-16 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700
+                       text-white shadow-lg z-50">
+      <div className="px-5 h-full flex flex-col justify-center">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <button
@@ -28,12 +25,9 @@ const Header = ({ toggleSidebar }) => {
               aria-label="Toggle sidebar"
             >
               <div className="relative w-6 h-6 flex flex-col justify-center items-center">
-                <span className="block w-6 h-0.5 mb-0.75 bg-white transform transition-all duration-300 
-                               hover:bg-yellow-300" />
-                <span className="block w-6 h-0.5 mb-0.75 bg-white transform transition-all duration-300 
-                               hover:bg-yellow-300" />
-                <span className="block w-6 h-0.5 bg-white transform transition-all duration-300 
-                               hover:bg-yellow-300" />
+                <span className="block w-6 h-0.5 mb-0.75 bg-white transform transition-all duration-300 hover:bg-yellow-300" />
+                <span className="block w-6 h-0.5 mb-0.75 bg-white transform transition-all duration-300 hover:bg-yellow-300" />
+                <span className="block w-6 h-0.5 bg-white transform transition-all duration-300 hover:bg-yellow-300" />
               </div>
             </button>
 
@@ -55,9 +49,7 @@ const Header = ({ toggleSidebar }) => {
                 key={item}
                 href="#"
                 className="px-4 py-2 rounded-lg transition-all duration-200 
-                         hover:bg-white/10 hover:transform hover:scale-105 
-                         focus:outline-none focus:ring-2 focus:ring-white/30
-                         relative group"
+                           hover:bg-white/10 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/30 relative group"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <span className="relative z-10">{item}</span>
@@ -99,8 +91,7 @@ const Header = ({ toggleSidebar }) => {
               <a
                 key={item}
                 href="#"
-                className="block px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-200
-                         transform hover:translate-x-2"
+                className="block px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-200 transform hover:translate-x-2"
                 style={{ 
                   animationDelay: `${index * 50}ms`,
                   transform: isMenuOpen ? 'translateX(0)' : 'translateX(-20px)',
