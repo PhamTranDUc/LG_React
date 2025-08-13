@@ -9,7 +9,6 @@ export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    name: "",
   });
 
   const dispatch = useDispatch();

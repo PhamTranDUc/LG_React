@@ -16,19 +16,18 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
     <>
       <div
         className={`fixed inset-0 bg-black bg-opacity-20 z-30 md:hidden transition-opacity duration-300
-        ${sidebarOpen ? "opacity-50 visible" : "opacity-0 invisible"}
-      `}
+        ${sidebarOpen ? "opacity-50 visible" : "opacity-0 invisible"}`}
         onClick={toggleSidebar}
         aria-hidden="true"
       />
 
       <aside
         className={`
-          fixed top-0 left-0 h-full bg-white shadow-2xl w-64
+          fixed top-16 left-0 h-[calc(100vh-4rem)] bg-white shadow-2xl w-64
           z-40 transform transition-all duration-300 ease-out
-          md:static md:translate-x-0 md:shadow-none md:w-56 md:h-screen
-          border-r border-black-200
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0 md:shadow-none md:w-56
+          border-r border-gray-200
+          ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
         <div className="p-6 border-b border-gray-100 md:hidden">
@@ -88,15 +87,14 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
                   >
                     <div
                       className={`
-                      w-2 h-2 rounded-full transition-all duration-200
-                      ${
-                        isActive
-                          ? "bg-white"
-                          : "bg-gray-400 group-hover:bg-indigo-500"
-                      }
-                    `}
+                        w-2 h-2 rounded-full transition-all duration-200
+                        ${
+                          isActive
+                            ? "bg-white"
+                            : "bg-gray-400 group-hover:bg-indigo-500"
+                        }
+                      `}
                     />
-
                     <span className="font-medium relative z-10">
                       {item.label}
                     </span>

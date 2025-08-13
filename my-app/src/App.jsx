@@ -1,16 +1,17 @@
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import MainLayout from './layouts/MainLayout';
 import DashboardPage from './pages/DashboardPage';
 import AddJobPage from './pages/AddJobPage';
 import LoginPage from './pages/LoginPage';
-import { useSelector } from 'react-redux';
 
 function App() {
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn); 
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginPage />} />
       <Route
         path="/*"
         element={
