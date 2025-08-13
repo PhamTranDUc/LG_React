@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Search, Plus, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -20,14 +20,14 @@ const Select = ({ value, onChange, options, placeholder = "Select an option" }) 
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between px-4 py-3.5 border border-black-300 rounded-md bg-white "
+        className="w-full flex items-center justify-between px-4 py-3.5 border border-black-300 rounded-md bg-white"
       >
         <span className="text-gray-900">{value || placeholder}</span>
-        <ChevronDown 
-          className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} 
+        <ChevronDown
+          className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
-      
+
       {isOpen && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-black-300 rounded-md shadow-lg max-h-60 overflow-auto">
           {options.map((option) => (
@@ -48,7 +48,6 @@ const Select = ({ value, onChange, options, placeholder = "Select an option" }) 
 
 const Pagination = ({ totalPages, currentPage, onPageChange }) => {
   if (totalPages <= 1) return null;
-
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
@@ -77,8 +76,12 @@ const DashboardPage = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
+  const didFetch = useRef(false); 
 
   useEffect(() => {
+    if (didFetch.current) return; 
+    didFetch.current = true;
+
     fetchJobsApi()
       .then(response => {
         const jobsData = response.data.map(job => ({
@@ -88,19 +91,14 @@ const DashboardPage = () => {
         }));
         dispatch(setJobs(jobsData));
       })
-      .catch(err => {
-        console.error('Failed to fetch jobs', err);
-      });
+      .catch(err => console.error('Failed to fetch jobs', err));
   }, [dispatch]);
 
   const filteredJobs = jobs.filter(job => {
     const matchesSearch =
       job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.company.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesStatus =
-      statusFilter === 'All Status' || job.status === statusFilter;
-
+    const matchesStatus = statusFilter === 'All Status' || job.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -137,20 +135,18 @@ const DashboardPage = () => {
             className="w-full pl-10 pr-4 py-3 border border-black-300 rounded-md focus:ring-indigo-500 focus:border-transparent"
           />
         </div>
-        
         <div className="w-full sm:w-auto sm:min-w-35">
           <Select
             value={statusFilter}
             onChange={(value) => dispatch(setStatusFilter(value))}
             options={JOB_STATUS_OPTIONS}
             placeholder="Select Status"
-            className="border-2 border-black-300 border-indigo-500 rounded-md"
           />
         </div>
       </div>
 
       <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-        {currentJobs.map((job) => (
+        {currentJobs.map(job => (
           <JobCard
             key={job.id}
             job={job}
@@ -162,7 +158,9 @@ const DashboardPage = () => {
 
       {filteredJobs.length === 0 && (
         <div className="text-center py-8 sm:py-12 px-4">
-          <p className="text-black-500 text-base sm:text-lg mb-4">No jobs found matching your criteria.</p>
+          <p className="text-black-500 text-base sm:text-lg mb-4">
+            No jobs found matching your criteria.
+          </p>
           <button
             onClick={handleAddJob}
             className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
