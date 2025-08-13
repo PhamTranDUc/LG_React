@@ -90,7 +90,7 @@ const DashboardPage = () => {
 
   const handleDelete = (jobId) => dispatch(deleteJob(jobId));
   const handleAddJob = () => navigate('/add-job');
-  const handleEdit = (job) => console.log('Edit job:', job);
+const handleEdit = (job) => navigate('/add-job', { state: { job } });
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

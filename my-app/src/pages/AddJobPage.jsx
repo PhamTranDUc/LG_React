@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { addJobApi } from "../api/index";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { addJobApi, updateJobApi } from "../api/index";
 
 const statusOptions = [
   { value: 1, label: "Interview" },
@@ -9,7 +10,11 @@ const statusOptions = [
 ];
 
 export default function AddJobPage() {
+  const location = useLocation();
+  const editJob = location.state?.job;
+
   const [form, setForm] = useState({
+    id: "",
     company: "",
     title: "",
     location: "",
@@ -19,6 +24,20 @@ export default function AddJobPage() {
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    if (editJob) {
+      setForm({
+        id: editJob.id || "",
+        company: editJob.company || "",
+        title: editJob.title || "",
+        location: editJob.location || "",
+        status: statusOptions.find(opt => opt.label === editJob.status)?.value || 2,
+        appliedDate: editJob.appliedDate || "",
+        notes: editJob.notes || "",
+      });
+    }
+  }, [editJob]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,17 +51,25 @@ export default function AddJobPage() {
     e.preventDefault();
     setLoading(true);
     setSuccess(false);
-    addJobApi({
+
+    const payload = {
       company: form.company,
       title: form.title,
       location: form.location,
       status: Number(form.status),
       appliedDate: form.appliedDate || new Date().toISOString(),
       notes: form.notes,
-    })
+    };
+
+    const apiCall = form.id
+      ? updateJobApi(form.id, payload)
+      : addJobApi(payload);
+
+    apiCall
       .then(() => {
         setSuccess(true);
         setForm({
+          id: "",
           company: "",
           title: "",
           location: "",
@@ -57,8 +84,10 @@ export default function AddJobPage() {
   return (
     <div className="flex justify-center mt-16">
       <div className="bg-white p-8 rounded-xl shadow-2xl min-w-96 border border-black">
-        <h2 className="mb-6 text-2xl font-semibold">Add Job</h2>
-        <form onSubmit={handleSubmit}>
+        <h2 className="mb-6 text-2xl font-semibold">
+          {form.id ? "Edit Job" : "Add Job"}
+        </h2>
+                <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block">
               <span className="font-bold">Company</span>
