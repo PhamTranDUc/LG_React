@@ -5,30 +5,36 @@ import MainLayout from './layouts/MainLayout';
 import DashboardPage from './pages/DashboardPage';
 import AddJobPage from './pages/AddJobPage';
 import LoginPage from './pages/LoginPage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
   return (
-    <Routes>
-      <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginPage />} />
-      <Route
-        path="/*"
-        element={
-          isLoggedIn ? (
-            <MainLayout>
-              <Routes>
-                <Route path="/" element={<DashboardPage />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/add-job" element={<AddJobPage />} />
-              </Routes>
-            </MainLayout>
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
-      />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginPage />} />
+        <Route
+          path="/*"
+          element={
+            isLoggedIn ? (
+              <MainLayout>
+                <Routes>
+                  <Route path="/" element={<DashboardPage />} />
+                  <Route path="/dashboard" element={<DashboardPage />} />
+                  <Route path="/add-job" element={<AddJobPage />} />
+                </Routes>
+              </MainLayout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+      </Routes>
+
+      <ToastContainer position="top-right" autoClose={3000} />
+    </>
   );
 }
 
