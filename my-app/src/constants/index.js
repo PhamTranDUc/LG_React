@@ -18,16 +18,14 @@ export const getStatusColor = (status) => {
 };
 
 export const JOB_STATUS_MAP = {
-  1: 'Applied',
-  2: 'Interview',
-  3: 'Offer',
-  4: 'Rejected',
+  1: 'Accepted',
+  2: 'Rejected',
+  3: 'Pending',
 };
 
 export const JOB_STATUS_OPTIONS = [
   'All Status',
-  'Applied',
-  'Interview',
-  'Offer',
+  'Accepted',
   'Rejected',
+  'Pending',
 ];
