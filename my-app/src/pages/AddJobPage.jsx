@@ -13,7 +13,9 @@ export default function AddJobPage() {
   const editJob = location.state?.job;
 
   const role = useSelector((state) => state.auth.user?.role);
-  const { user } = useSelector((state) => state.auth); 
+  const { user } = useSelector((state) => state.auth);
+  const theme = useSelector((state) => state.theme.mode);
+
   const isEditing = !!editJob?.id;
   const isAdmin = role === "ADMIN";
   const isUser = role === "USER";
@@ -133,16 +135,35 @@ export default function AddJobPage() {
     if (isAdmin && localForm.email === user.email) return false;
 
     if (isAdmin) return fieldName !== "status";
-    if (isUser) return fieldName === "status"; 
+    if (isUser) return fieldName === "status";
 
     return false;
   };
 
+  const inputBaseClass =
+    "w-full mt-1 p-2 border rounded transition-colors duration-300";
+
+  const inputThemeClass = (disabled) =>
+    disabled
+      ? `bg-gray-200 cursor-not-allowed border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200`
+      : `bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600`;
+
   return (
-    <div className="flex justify-center mt-5 px-2">
-      <div className="bg-white p-8 rounded-xl shadow-2xl border border-black
-                      w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-4xl">
-        <h2 className="mb-6 text-2xl font-semibold">
+    <div
+      className="flex justify-center mt-5 px-2 transition-colors duration-300"
+      style={{
+        backgroundColor: theme === "dark" ? "#1A202C" : "#F9FAFB",
+      }}
+    >
+      <div
+        className="p-8 rounded-xl shadow-2xl border w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-4xl transition-colors duration-300"
+        style={{
+          backgroundColor: theme === "dark" ? "#2D3748" : "#FFFFFF",
+          borderColor: theme === "dark" ? "#4A5568" : "#E5E7EB",
+          color: theme === "dark" ? "#FFFFFF" : "#1F2937",
+        }}
+      >
+        <h2 className="mb-6 text-2xl font-semibold transition-colors duration-300">
           {isEditing ? "Edit Job" : "Add Job"}
         </h2>
         <form onSubmit={handleSubmit}>
@@ -164,11 +185,7 @@ export default function AddJobPage() {
                   onChange={handleChange}
                   onBlur={() => validateField(name, localForm[name])}
                   disabled={getDisabled(name)}
-                  className={`w-full mt-1 p-2 border rounded ${
-                    getDisabled(name)
-                      ? "bg-gray-200 cursor-not-allowed"
-                      : "border-black-200"
-                  }`}
+                  className={`${inputBaseClass} ${inputThemeClass(getDisabled(name))}`}
                   placeholder={`Enter ${label}`}
                 />
                 {errors[name] && (
@@ -185,11 +202,7 @@ export default function AddJobPage() {
                 value={localForm.status}
                 onChange={handleChange}
                 disabled={getDisabled("status")}
-                className={`w-full mt-1 p-2 border rounded ${
-                  getDisabled("status")
-                    ? "bg-gray-200 cursor-not-allowed"
-                    : "border-black-200"
-                }`}
+                className={`${inputBaseClass} ${inputThemeClass(getDisabled("status"))}`}
               >
                 {(!isEditing && isUser && <option value="Pending">Pending</option>) ||
                   (!isEditing && isAdmin && <option value="Accepted">Accepted</option>) ||
@@ -211,11 +224,7 @@ export default function AddJobPage() {
                 value={localForm.appliedDate}
                 onChange={handleChange}
                 disabled={getDisabled("appliedDate")}
-                className={`w-full mt-1 p-2 border rounded ${
-                  getDisabled("appliedDate")
-                    ? "bg-gray-200 cursor-not-allowed"
-                    : "border-black-200"
-                }`}
+                className={`${inputBaseClass} ${inputThemeClass(getDisabled("appliedDate"))}`}
               />
             </div>
 
@@ -229,11 +238,7 @@ export default function AddJobPage() {
                 disabled={getDisabled("notes")}
                 placeholder="e.g. Interview scheduled next Monday..."
                 rows={3}
-                className={`w-full mt-1 p-2 border rounded resize-none ${
-                  getDisabled("notes")
-                    ? "bg-gray-200 cursor-not-allowed"
-                    : "border-black-200"
-                }`}
+                className={`${inputBaseClass} ${inputThemeClass(getDisabled("notes"))} resize-none`}
               />
             </div>
           </div>
@@ -241,7 +246,7 @@ export default function AddJobPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white p-3 rounded-md font-semibold text-base"
+            className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white p-3 rounded-md font-semibold text-base transition-colors duration-300"
           >
             {loading ? "Submitting..." : isEditing ? "Update Job" : "Add Job"}
           </button>

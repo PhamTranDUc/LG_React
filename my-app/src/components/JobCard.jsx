@@ -1,8 +1,16 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Edit, Trash2, MapPin, Phone, Mail, User, Calendar, FileText } from "lucide-react";
 import { getStatusColor } from "../constants/index";
 
 const JobCard = ({ job, onEdit, onDelete }) => {
+  const user = useSelector((state) => state.auth.user);
+  const userEmail = user?.email;
+  const role = user?.role;
+
+  const canEdit = role === "ADMIN" || (role === "USER" && job.email === userEmail);
+  const canDelete = role === "ADMIN" || (role === "USER" && job.email === userEmail);
+
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow flex flex-col h-full">
       {/* Header */}
@@ -40,20 +48,24 @@ const JobCard = ({ job, onEdit, onDelete }) => {
 
       {/* Actions */}
       <div className="mt-auto flex justify-end space-x-2">
-        <button
-          onClick={() => onEdit(job)}
-          className="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
-        >
-          <Edit className="w-3 h-3 mr-1" />
-          Edit
-        </button>
-        <button
-          onClick={() => onDelete(job.id)}
-          className="inline-flex items-center px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition-colors"
-        >
-          <Trash2 className="w-3 h-3 mr-1" />
-          Delete
-        </button>
+        {canEdit && (
+          <button
+            onClick={() => onEdit(job)}
+            className="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600 transition-colors"
+          >
+            <Edit className="w-3 h-3 mr-1" />
+            Edit
+          </button>
+        )}
+        {canDelete && (
+          <button
+            onClick={() => onDelete(job.id)}
+            className="inline-flex items-center px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition-colors"
+          >
+            <Trash2 className="w-3 h-3 mr-1" />
+            Delete
+          </button>
+        )}
       </div>
     </div>
   );

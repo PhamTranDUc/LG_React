@@ -19,11 +19,9 @@ const addJobSlice = createSlice({
   name: "addJob",
   initialState,
   reducers: {
-    // Merge form với payload
     setJobForm: (state, action) => {
       state.form = { ...state.form, ...action.payload };
     },
-    // Reset về form mặc định
     resetJobForm: (state) => {
       state.form = { ...initialState.form };
     },
