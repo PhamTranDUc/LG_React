@@ -39,7 +39,9 @@ const Select = ({ value, onChange, options, placeholder = "Select an option" }) 
               key={option}
               type="button"
               onClick={() => handleSelect(option)}
-              className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${value === option ? "bg-indigo-50 text-indigo-600" : "text-gray-900"}`}
+              className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${
+                value === option ? "bg-indigo-50 text-indigo-600" : "text-gray-900"
+              }`}
             >
               {option}
             </button>
@@ -60,7 +62,11 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
         <button
           key={page}
           onClick={() => onPageChange(page)}
-          className={`px-3 py-1 rounded-md border ${currentPage === page ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-gray-700 border-gray-300"}`}
+          className={`px-3 py-1 rounded-md border ${
+            currentPage === page
+              ? "bg-indigo-600 text-white border-indigo-600"
+              : "bg-white text-gray-700 border-gray-300"
+          }`}
         >
           {page}
         </button>
@@ -73,6 +79,7 @@ const DashboardPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { jobs, searchTerm, statusFilter } = useSelector((state) => state.job);
+  const { user } = useSelector((state) => state.auth);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
@@ -98,8 +105,12 @@ const DashboardPage = () => {
     const matchesSearch =
       job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.company.toLowerCase().includes(searchTerm.toLowerCase());
+
     const matchesStatus =
-      statusFilter === "All Status" || job.status === statusFilter;
+      statusFilter === "All Status" ||
+      job.status === statusFilter ||
+      (statusFilter === "My Jobs" && job.email === user.email);
+
     return matchesSearch && matchesStatus;
   });
 
@@ -110,8 +121,8 @@ const DashboardPage = () => {
 
   const handleDelete = (jobId) => dispatch(deleteJob(jobId));
   const handleAddJob = () => navigate("/add-job");
-  
-  const handleEdit = (job) => navigate("/add-job", { state: { job, isEditing: true } });
+  const handleEdit = (job) =>
+    navigate("/add-job", { state: { job, isEditing: true } });
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -143,7 +154,7 @@ const DashboardPage = () => {
           <Select
             value={statusFilter}
             onChange={(value) => dispatch(setStatusFilter(value))}
-            options={JOB_STATUS_OPTIONS}
+            options={[...JOB_STATUS_OPTIONS, "My Jobs"]}
             placeholder="Select Status"
           />
         </div>

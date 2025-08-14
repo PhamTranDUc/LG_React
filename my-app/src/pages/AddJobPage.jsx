@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setJobForm, resetJobForm } from "../store/slice/addJobSlice";
 import { addJobApi, updateJobApi } from "../api/index";
+import { JOB_STATUS_MAP, JOB_STATUS_REVERSE_MAP } from "../constants/index";
+import { toast } from "react-toastify";
 
 export default function AddJobPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const editJob = location.state?.job;
 
   const role = useSelector((state) => state.auth.user?.role);
+  const { user } = useSelector((state) => state.auth); 
   const isEditing = !!editJob?.id;
   const isAdmin = role === "ADMIN";
   const isUser = role === "USER";
 
-  const initialStatus = !isEditing
-    ? isUser
-      ? "Pending"
-      : isAdmin
-      ? "Accepted"
-      : ""
-    : editJob?.status || "";
+  const mappedStatus = isEditing
+    ? JOB_STATUS_MAP[editJob?.status] || ""
+    : isUser
+    ? "Pending"
+    : isAdmin
+    ? "Accepted"
+    : "";
 
   const initialForm = {
     id: editJob?.id || "",
@@ -30,14 +34,13 @@ export default function AddJobPage() {
     location: editJob?.location || "",
     phone: editJob?.phone || "",
     email: editJob?.email || "",
-    status: initialStatus,
+    status: mappedStatus,
     appliedDate: editJob?.appliedDate || "",
     notes: editJob?.notes || "",
   };
 
   const [localForm, setLocalForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -54,8 +57,7 @@ export default function AddJobPage() {
   };
 
   const validateField = (name, value) => {
-    // Nếu admin edit → chỉ validate status
-    if (isEditing && isAdmin && name !== "status") return;
+    if (isEditing && isAdmin && name !== "status" && localForm.email !== user.email) return;
 
     let error = "";
     if (name === "company" && !value.trim()) error = "Company is required";
@@ -74,8 +76,7 @@ export default function AddJobPage() {
 
   const validateForm = () => {
     let fields = ["company", "title", "phone", "email"];
-    // Nếu admin edit → chỉ validate status
-    if (isEditing && isAdmin) fields = ["status"];
+    if (isEditing && isAdmin && localForm.email !== user.email) fields = ["status"];
 
     let isValid = true;
     fields.forEach((field) => {
@@ -90,7 +91,6 @@ export default function AddJobPage() {
     if (!validateForm()) return;
 
     setLoading(true);
-    setSuccess(false);
 
     const payload = {
       company: localForm.company,
@@ -99,7 +99,7 @@ export default function AddJobPage() {
       location: localForm.location,
       phone: localForm.phone,
       email: localForm.email,
-      status: localForm.status || initialStatus,
+      status: JOB_STATUS_REVERSE_MAP[localForm.status] || localForm.status,
       appliedDate: localForm.appliedDate || new Date().toISOString(),
       notes: localForm.notes,
     };
@@ -110,10 +110,16 @@ export default function AddJobPage() {
 
     apiCall
       .then(() => {
-        setSuccess(true);
         dispatch(resetJobForm());
         setErrors({});
         setLocalForm(initialForm);
+
+        toast.success("Job submitted successfully!", {
+          onClose: () => navigate("/dashboard"),
+        });
+      })
+      .catch(() => {
+        toast.error("Something went wrong!");
       })
       .finally(() => setLoading(false));
   };
@@ -124,8 +130,11 @@ export default function AddJobPage() {
       return false;
     }
 
-    if (isAdmin) return fieldName !== "status"; 
+    if (isAdmin && localForm.email === user.email) return false;
+
+    if (isAdmin) return fieldName !== "status";
     if (isUser) return fieldName === "status"; 
+
     return false;
   };
 
@@ -236,12 +245,6 @@ export default function AddJobPage() {
           >
             {loading ? "Submitting..." : isEditing ? "Update Job" : "Add Job"}
           </button>
-
-          {success && (
-            <div className="text-green-600 mt-4 text-center font-medium">
-              Job submitted successfully!
-            </div>
-          )}
         </form>
       </div>
     </div>

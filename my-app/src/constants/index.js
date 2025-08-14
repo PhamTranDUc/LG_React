@@ -1,14 +1,13 @@
 export const MENU_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', path: '/dashboard' },
-  { id: 'add-job', label: 'Add Job', path: '/add-job' },
+  { id: 'add-job', label: 'Manager job', path: '/add-job' },
   { id: 'settings', label: 'Settings', path: '/settings' }
 ];
 
 
 export const JOB_STATUS_CLASSES = {
-  applied: 'bg-green-100 text-green-800',
+  accepted: 'bg-green-100 text-green-800',
   rejected: 'bg-red-100 text-red-800',
-  interview: 'bg-blue-100 text-blue-800',
   default: 'bg-gray-100 text-gray-800',
 };
 
@@ -29,3 +28,9 @@ export const JOB_STATUS_OPTIONS = [
   'Rejected',
   'Pending',
 ];
+
+export const JOB_STATUS_REVERSE_MAP = {
+  Accepted: 1,
+  Rejected: 2,
+  Pending: 3,
+};
