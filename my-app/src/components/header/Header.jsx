@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({ toggleSidebar }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleSidebarToggle = () => {
     const button = document.getElementById('sidebar-toggle');
@@ -36,8 +38,11 @@ const Header = ({ toggleSidebar }) => {
                             backdrop-blur-sm border border-white/30">
                 <div className="w-4 h-4 bg-white rounded-sm transform rotate-12" />
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-white to-yellow-200 
-                           bg-clip-text text-transparent">
+              <h1
+                className="text-xl font-bold bg-gradient-to-r from-white to-yellow-200 
+                           bg-clip-text text-transparent cursor-pointer"
+                onClick={() => navigate('/dashboard')} 
+              >
                 JobTracker
               </h1>
             </div>
@@ -57,7 +62,7 @@ const Header = ({ toggleSidebar }) => {
                               group-hover:scale-100 transition-transform duration-300" />
               </a>
             ))}
-            
+
             <div className="ml-4 pl-4 border-l border-white/30">
               <button className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center
                                hover:bg-white/30 transition-all duration-200 transform hover:scale-110
