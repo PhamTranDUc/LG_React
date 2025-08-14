@@ -17,3 +17,7 @@ export const loginApi = (data) => {
     headers: { "Content-Type": "application/json" },
   });
 };
+
+export const deleteJobApi = (id) => {
+  return axiosServices.delete(`v1/jobs/job/${id}`);
+};
