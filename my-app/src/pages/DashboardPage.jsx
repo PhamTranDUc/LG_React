@@ -1,15 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Search, Plus, ChevronDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import JobCard from '../components/JobCard';
-import { setSearchTerm, setStatusFilter, setJobs, deleteJob } from '../store/slice/jobSlice';
-import { fetchJobsApi } from '../api/index';
-import { JOB_STATUS_MAP, JOB_STATUS_OPTIONS } from '../constants/index';
+import React, { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Search, Plus, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import JobCard from "../components/JobCard";
+import {
+  setSearchTerm,
+  setStatusFilter,
+  setJobs,
+  deleteJob,
+} from "../store/slice/jobSlice";
+import { fetchJobsApi } from "../api/index";
+import { JOB_STATUS_MAP, JOB_STATUS_OPTIONS } from "../constants/index";
 
 const Select = ({ value, onChange, options, placeholder = "Select an option" }) => {
   const [isOpen, setIsOpen] = useState(false);
-
   const handleSelect = (option) => {
     onChange(option);
     setIsOpen(false);
@@ -24,7 +28,7 @@ const Select = ({ value, onChange, options, placeholder = "Select an option" }) 
       >
         <span className="text-gray-900">{value || placeholder}</span>
         <ChevronDown
-          className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -35,7 +39,7 @@ const Select = ({ value, onChange, options, placeholder = "Select an option" }) 
               key={option}
               type="button"
               onClick={() => handleSelect(option)}
-              className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${value === option ? 'bg-indigo-50 text-indigo-600' : 'text-gray-900'}`}
+              className={`w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${value === option ? "bg-indigo-50 text-indigo-600" : "text-gray-900"}`}
             >
               {option}
             </button>
@@ -52,15 +56,11 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
 
   return (
     <div className="flex justify-center items-center mt-6 gap-2">
-      {pages.map(page => (
+      {pages.map((page) => (
         <button
           key={page}
           onClick={() => onPageChange(page)}
-          className={`px-3 py-1 rounded-md border ${
-            currentPage === page
-              ? 'bg-indigo-600 text-white border-indigo-600'
-              : 'bg-white text-gray-700 border-gray-300'
-          }`}
+          className={`px-3 py-1 rounded-md border ${currentPage === page ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-gray-700 border-gray-300"}`}
         >
           {page}
         </button>
@@ -72,33 +72,34 @@ const Pagination = ({ totalPages, currentPage, onPageChange }) => {
 const DashboardPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { jobs, searchTerm, statusFilter } = useSelector(state => state.job);
+  const { jobs, searchTerm, statusFilter } = useSelector((state) => state.job);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
-  const didFetch = useRef(false); 
+  const didFetch = useRef(false);
 
   useEffect(() => {
-    if (didFetch.current) return; 
+    if (didFetch.current) return;
     didFetch.current = true;
 
     fetchJobsApi()
-      .then(response => {
-        const jobsData = response.data.map(job => ({
+      .then((response) => {
+        const jobsData = response.data.map((job) => ({
           ...job,
-          status: JOB_STATUS_MAP[job.status] || 'Unknown',
-          appliedDate: job.appliedDate.split('T')[0],
+          status: JOB_STATUS_MAP[job.status] || "Unknown",
+          appliedDate: job.appliedDate?.split("T")[0] || "",
         }));
         dispatch(setJobs(jobsData));
       })
-      .catch(err => console.error('Failed to fetch jobs', err));
+      .catch((err) => console.error("Failed to fetch jobs", err));
   }, [dispatch]);
 
-  const filteredJobs = jobs.filter(job => {
+  const filteredJobs = jobs.filter((job) => {
     const matchesSearch =
       job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.company.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'All Status' || job.status === statusFilter;
+    const matchesStatus =
+      statusFilter === "All Status" || job.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -108,13 +109,16 @@ const DashboardPage = () => {
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
 
   const handleDelete = (jobId) => dispatch(deleteJob(jobId));
-  const handleAddJob = () => navigate('/add-job');
-  const handleEdit = (job) => navigate('/add-job', { state: { job } });
+  const handleAddJob = () => navigate("/add-job");
+  
+  const handleEdit = (job) => navigate("/add-job", { state: { job, isEditing: true } });
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
-        <h1 className="text-xl sm:text-2xl font-bold text-black-900">My Jobs</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-black-900">
+          My Jobs
+        </h1>
         <button
           onClick={handleAddJob}
           className="w-full h-11 sm:w-auto inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
@@ -146,7 +150,7 @@ const DashboardPage = () => {
       </div>
 
       <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-        {currentJobs.map(job => (
+        {currentJobs.map((job) => (
           <JobCard
             key={job.id}
             job={job}
