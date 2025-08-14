@@ -12,6 +12,11 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
     }, 150);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("auth");
+    window.location.href = "/login";
+  };
+
   return (
     <>
       <div
@@ -27,7 +32,9 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
           z-40 transform transition-all duration-300 ease-out
           md:translate-x-0 md:shadow-none md:w-56
           border-r border-gray-200
-          ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+          ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+          }
         `}
       >
         <div className="p-6 border-b border-gray-100 md:hidden">
@@ -88,10 +95,16 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
                     <div
                       className={`
                         w-2 h-2 rounded-full transition-all duration-200
-                        ${isActive ? "bg-white" : "bg-gray-400 group-hover:bg-indigo-500"}
+                        ${
+                          isActive
+                            ? "bg-white"
+                            : "bg-gray-400 group-hover:bg-indigo-500"
+                        }
                       `}
                     />
-                    <span className="font-medium relative z-10">{item.label}</span>
+                    <span className="font-medium relative z-10">
+                      {item.label}
+                    </span>
 
                     {!isActive && (
                       <div
@@ -113,8 +126,23 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
           </ul>
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-100 md:hidden">
-          <div className="text-center">
+        <div className="absolute bottom-0 left-0 right-0 border-t border-gray-100">
+          <div className="p-4">
+            <button
+              onClick={handleLogout}
+              className="w-full text-left px-4 py-3 rounded-xl transition-all duration-200
+                         flex items-center space-x-3 group relative overflow-hidden
+                         text-red-600 hover:bg-red-50 hover:scale-[1.01]"
+            >
+              <div className="w-2 h-2 rounded-full bg-red-400 group-hover:bg-red-500 transition-all duration-200" />
+              <span className="font-medium relative z-10">Logout</span>
+              <div
+                className="absolute inset-0 bg-red-50 transform scale-x-0 group-hover:scale-x-100 
+                            transition-transform duration-300 origin-left"
+              />
+            </button>
+          </div>
+          <div className="text-center pb-3">
             <p className="text-xs text-gray-500">JobTracker v1.0</p>
           </div>
         </div>
