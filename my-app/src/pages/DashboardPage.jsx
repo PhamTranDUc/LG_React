@@ -9,8 +9,9 @@ import {
   setJobs,
   deleteJob,
 } from "../store/slice/jobSlice";
-import { fetchJobsApi } from "../api/index";
+import { fetchJobsApi, deleteJobApi } from "../api/index";
 import { JOB_STATUS_MAP, JOB_STATUS_OPTIONS } from "../constants/index";
+import { toast } from "react-toastify";
 
 const Select = ({ value, onChange, options, placeholder = "Select an option" }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -119,7 +120,17 @@ const DashboardPage = () => {
   const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
 
-  const handleDelete = (jobId) => dispatch(deleteJob(jobId));
+  const handleDelete = async (jobId) => {
+    if (window.confirm("Bạn có chắc chắn muốn xoá job này?")) {
+      try {
+        await deleteJobApi(jobId);
+        dispatch(deleteJob(jobId));
+        toast.success("Xoá job thành công!");
+      } catch (err) {
+        toast.error("Xoá job thất bại!");
+      }
+    }
+  };
   const handleAddJob = () => navigate("/add-job");
   const handleEdit = (job) =>
     navigate("/add-job", { state: { job, isEditing: true } });
