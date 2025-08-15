@@ -70,9 +70,13 @@ const Header = ({ toggleSidebar }) => {
 
           <nav className="hidden md:flex items-center space-x-3">
             {['Home', 'About', 'Profile'].map((item, index) => (
-              <a
+              <button
                 key={item}
-                href="#"
+                onClick={() => {
+                  if (item === 'Home') navigate('/dashboard');
+                  else if (item === 'Profile') navigate('/profile');
+                  else if (item === 'About') navigate('/about');
+                }}
                 className={`px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-opacity-30 relative group
                            ${theme === 'dark' 
                              ? 'hover:bg-gray-700/50 focus:ring-gray-400' 
@@ -83,7 +87,7 @@ const Header = ({ toggleSidebar }) => {
                 <span className="relative z-10">{item}</span>
                 <div className={`absolute inset-0 rounded-lg transform scale-0 group-hover:scale-100 transition-transform duration-300
                                ${theme === 'dark' ? 'bg-gray-700/30' : 'bg-white/5'}`} />
-              </a>
+              </button>
             ))}
 
             <button
@@ -97,15 +101,10 @@ const Header = ({ toggleSidebar }) => {
             >
               <div className="relative z-10 flex items-center space-x-2">
                 <span className="text-sm transition-transform duration-300 group-hover:rotate-12">
-                  {theme === 'light' ? '🌙' : '☀️'}
+                  {theme === 'light' ? '☀️' : '🌙'}
                 </span>
-                <span>{theme === 'light' ? 'Dark' : 'Light'}</span>
+                <span>{theme === 'light' ? 'Light' : 'Dark'}</span>
               </div>
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300
-                             ${theme === 'dark' 
-                               ? 'bg-gradient-to-r from-blue-400 to-purple-400' 
-                               : 'bg-gradient-to-r from-yellow-300 to-orange-300'
-                             }`} />
             </button>
           </nav>
 
@@ -129,24 +128,25 @@ const Header = ({ toggleSidebar }) => {
           <div className={`py-2 space-y-2 border-t transition-colors duration-300
                           ${theme === 'dark' ? 'border-gray-600/50' : 'border-white/20'}`}>
             {['Home', 'About', 'Profile'].map((item, index) => (
-              <a
+              <button
                 key={item}
-                href="#"
-                className={`block px-4 py-2 rounded-lg transition-all duration-200 transform hover:translate-x-2
-                           ${theme === 'dark' 
-                             ? 'hover:bg-gray-700/50' 
-                             : 'hover:bg-white/10'
-                           }`}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  if (item === 'Home') navigate('/dashboard');
+                  else if (item === 'Profile') navigate('/profile');
+                  else if (item === 'About') navigate('/about');
+                }}
+                className={`block w-full text-left px-4 py-2 rounded-lg transition-all duration-200 transform
+                           ${theme === 'dark' ? 'hover:bg-gray-700/50' : 'hover:bg-white/10'}`}
                 style={{
                   animationDelay: `${index * 50}ms`,
                   transform: isMenuOpen ? 'translateX(0)' : 'translateX(-20px)',
                   opacity: isMenuOpen ? 1 : 0,
                   transition: `all 300ms ease-out ${index * 50}ms`,
                 }}
-                onClick={() => setIsMenuOpen(false)}
               >
                 {item}
-              </a>
+              </button>
             ))}
 
             <button
@@ -159,9 +159,9 @@ const Header = ({ toggleSidebar }) => {
             >
               <div className="flex items-center space-x-2">
                 <span className="transition-transform duration-300 group-hover:rotate-12">
-                  {theme === 'light' ? '🌙' : '☀️'}
+                  {theme === 'light' ? '☀️' : '🌙'}
                 </span>
-                <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+                <span>{theme === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
               </div>
             </button>
           </div>

@@ -20,11 +20,9 @@ const MainLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen flex flex-col transition-colors duration-300">
-      {/* Header */}
       <Header toggleSidebar={toggleSidebar} />
 
       <div className="flex flex-1">
-        {/* Sidebar */}
         <Sidebar sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
 
         <main
