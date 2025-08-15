@@ -6,8 +6,9 @@ const SettingPage = () => {
   const theme = useSelector((state) => state.theme.mode);
   const dispatch = useDispatch();
 
-  const handleThemeChange = (mode) => {
-    dispatch(setTheme(mode));
+  const handleThemeToggle = () => {
+    const newMode = theme === "dark" ? "light" : "dark";
+    dispatch(setTheme(newMode));
   };
 
   return (
@@ -38,27 +39,51 @@ const SettingPage = () => {
         >
           Theme
         </h2>
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => handleThemeChange("light")}
-            className={`px-4 py-2 rounded-md font-medium border transition-colors duration-300 ${
-              theme === "light"
-                ? "bg-indigo-600 text-white border-indigo-600"
-                : "bg-white text-gray-700 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-            }`}
-          >
-            Light
-          </button>
-          <button
-            onClick={() => handleThemeChange("dark")}
-            className={`px-4 py-2 rounded-md font-medium border transition-colors duration-300 ${
-              theme === "dark"
-                ? "bg-indigo-600 text-white border-indigo-600"
-                : "bg-white text-gray-700 border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600"
-            }`}
-          >
-            Dark
-          </button>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium">Light</span>
+            <button
+              onClick={handleThemeToggle}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                theme === "dark" 
+                  ? "bg-indigo-600" 
+                  : "bg-gray-200"
+              }`}
+              style={{
+                backgroundColor: theme === "dark" ? "#4F46E5" : "#E5E7EB"
+              }}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+                  theme === "dark" ? "translate-x-6" : "translate-x-1"
+                }`}
+              />
+            </button>
+            <span className="text-sm font-medium">Dark</span>
+          </div>
+          
+          <div className="text-sm text-gray-500">
+            Current: <span className="font-medium capitalize">{theme}</span>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{
+          borderColor: theme === "dark" ? "#4A5568" : "#E5E7EB"
+        }}>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-full bg-yellow-400 flex items-center justify-center">
+              ☀️
+            </div>
+            <span className="text-sm">Light Mode</span>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-full bg-gray-800 flex items-center justify-center">
+              🌙
+            </div>
+            <span className="text-sm">Dark Mode</span>
+          </div>
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../store/slice/authSlice";
 import { useNavigate } from "react-router-dom";
-import { loginApi } from "../api/index"; 
+import { loginApi } from "../api/index";
 import { toast } from "react-toastify";
 
 export default function LoginPage() {
@@ -22,24 +22,36 @@ export default function LoginPage() {
     const { email, password } = formData;
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) { toast.error("Vui lòng nhập email"); return; }
-    if (!emailRegex.test(email)) { toast.error("Email không hợp lệ"); return; }
-    if (!password) { toast.error("Vui lòng nhập mật khẩu"); return; }
-    if (password.length < 6) { toast.error("Mật khẩu phải có ít nhất 6 ký tự"); return; }
+    if (!email) {
+      toast.error("Please enter your email");
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      toast.error("Invalid email format");
+      return;
+    }
+    if (!password) {
+      toast.error("Please enter your password");
+      return;
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
 
     setLoading(true);
     try {
       const response = await loginApi({ email, password });
-      const role = response.data; 
-      dispatch(loginSuccess({ email, role }));
+      const userData = response.data.data; 
+      dispatch(loginSuccess(userData)); 
 
-      toast.success(`Đăng nhập thành công! Role: ${role}`, {
-        autoClose: 3000, 
-        onClose: () => navigate("/dashboard")
+      toast.success(`Login successful! Role: ${userData.role}`, {
+        autoClose: 3000,
+        onClose: () => navigate("/dashboard"),
       });
     } catch (error) {
       console.error(error);
-      toast.error("Email hoặc mật khẩu không đúng!");
+      toast.error("Incorrect email or password!");
     } finally {
       setLoading(false);
     }
@@ -52,8 +64,8 @@ export default function LoginPage() {
           <div className="mx-auto w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
             <User className="w-8 h-8 text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">Đăng Nhập</h2>
-          <p className="text-gray-500">Chào mừng bạn trở lại!</p>
+          <h2 className="text-3xl font-bold text-gray-800 mb-2">Login</h2>
+          <p className="text-gray-500">Welcome to our page</p>
         </div>
 
         <div className="space-y-6">
@@ -79,7 +91,7 @@ export default function LoginPage() {
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              placeholder="Mật khẩu"
+              placeholder="Password"
               value={formData.password}
               onChange={handleInputChange}
               className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
@@ -90,7 +102,11 @@ export default function LoginPage() {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-700 transition-colors"
             >
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
             </button>
           </div>
         </div>
@@ -98,9 +114,13 @@ export default function LoginPage() {
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className={`w-full mt-6 bg-blue-500 text-white py-3 px-4 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400 transform transition-all duration-300 shadow-lg ${loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600 hover:scale-105"}`}
+          className={`w-full mt-6 bg-blue-500 text-white py-3 px-4 rounded-xl font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400 transform transition-all duration-300 shadow-lg ${
+            loading
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-blue-600 hover:scale-105"
+          }`}
         >
-          {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
+          {loading ? "Logging in..." : "Login"}
         </button>
       </div>
     </div>

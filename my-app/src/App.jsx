@@ -6,6 +6,7 @@ import DashboardPage from './pages/DashboardPage';
 import AddJobPage from './pages/AddJobPage';
 import LoginPage from './pages/LoginPage';
 import SettingPage from './pages/SettingPage';
+import ProfilePage from './pages/ProfilePage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -15,13 +16,11 @@ function App() {
   return (
     <>
       <Routes>
-        {/* Login route */}
         <Route
           path="/login"
           element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginPage />}
         />
 
-        {/* Protected routes */}
         <Route
           path="/*"
           element={
@@ -32,6 +31,7 @@ function App() {
                   <Route path="/dashboard" element={<DashboardPage />} />
                   <Route path="/add-job" element={<AddJobPage />} />
                   <Route path="/settings" element={<SettingPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
                 </Routes>
               </MainLayout>
             ) : (
@@ -41,7 +41,6 @@ function App() {
         />
       </Routes>
 
-      {/* Toast notifications */}
       <ToastContainer position="top-right" autoClose={3000} />
     </>
   );

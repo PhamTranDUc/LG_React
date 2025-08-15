@@ -42,7 +42,6 @@ const Select = ({ value, onChange, options, placeholder = "Select an option", th
         />
       </button>
 
-      {/* Background glow effect */}
       <div className={`
         absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
         ${theme === "dark" 
@@ -143,7 +142,6 @@ const StatsCard = ({ icon: Icon, title, value, color, theme }) => (
       : "bg-white/70 border-gray-200/50 shadow-lg shadow-gray-500/10"
     }
   `}>
-    {/* Background glow */}
     <div className={`
       absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
       bg-gradient-to-br ${color}/10
@@ -213,7 +211,6 @@ const DashboardPage = () => {
   const currentJobs = filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage);
 
-  // Stats calculations
   const myJobs = jobs.filter(job => job.email === user.email);
   const totalJobs = jobs.length;
   const pendingJobs = jobs.filter(job => job.status === "Pending").length;
@@ -242,7 +239,6 @@ const DashboardPage = () => {
         : "bg-gradient-to-br from-gray-50 via-white to-gray-100"
       }
     `}>
-      {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className={`
           absolute top-20 right-10 w-96 h-96 opacity-10 blur-3xl rounded-full
@@ -261,7 +257,6 @@ const DashboardPage = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 relative z-10">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h1 className={`
@@ -299,7 +294,6 @@ const DashboardPage = () => {
           </button>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <StatsCard
             icon={Briefcase}
@@ -331,9 +325,7 @@ const DashboardPage = () => {
           />
         </div>
 
-        {/* Search and Filter */}
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
-          {/* Search Input */}
           <div className="flex-1 relative group">
             <Search className={`
               absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors duration-300
@@ -352,7 +344,6 @@ const DashboardPage = () => {
                 }
               `}
             />
-            {/* Search glow effect */}
             <div className={`
               absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none
               ${theme === "dark" 
@@ -362,7 +353,6 @@ const DashboardPage = () => {
             `} />
           </div>
 
-          {/* Filter Select */}
           <div className="w-full lg:w-64">
             <Select
               value={statusFilter}
@@ -374,7 +364,6 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Jobs Grid */}
         {currentJobs.length > 0 ? (
           <>
             <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mb-8">
@@ -401,7 +390,6 @@ const DashboardPage = () => {
             />
           </>
         ) : (
-          /* Empty State */
           <div className={`
             text-center py-16 px-4 rounded-2xl backdrop-blur-sm border transition-all duration-300
             ${theme === "dark"
@@ -456,7 +444,6 @@ const DashboardPage = () => {
         )}
       </div>
 
-      {/* Custom CSS for animations */}
       <style jsx>{`
         @keyframes fade-in {
           from {
