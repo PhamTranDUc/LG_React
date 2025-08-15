@@ -1,12 +1,10 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { MENU_ITEMS } from "../../constants";
-import { useSelector, useDispatch } from "react-redux";
-import { toggleTheme } from "../../store/slice/themeSlice";
+import { useSelector } from "react-redux";
 
 const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
 
   const theme = useSelector((state) => state.theme.mode);
 
@@ -25,8 +23,11 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
   return (
     <>
       <div
-        className={`fixed inset-x-0 top-16 bottom-0 bg-black bg-opacity-20 z-30 md:hidden transition-opacity duration-300
-        ${sidebarOpen ? "opacity-50 visible" : "opacity-0 invisible"}`}
+        className={`fixed inset-x-0 top-16 bottom-0 z-30 md:hidden transition-all duration-300
+        ${sidebarOpen 
+          ? `opacity-50 visible ${theme === 'dark' ? 'bg-black bg-opacity-60' : 'bg-black bg-opacity-20'}` 
+          : "opacity-0 invisible"
+        }`}
         onClick={toggleSidebar}
         aria-hidden="true"
       />
@@ -34,17 +35,32 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
       <aside
         className={`
           fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 md:w-56 z-40 transform transition-all duration-300 ease-out
-          border-r ${theme === "dark" ? "bg-gray-900 border-gray-700 text-gray-100" : "bg-white border-gray-200 text-gray-700"}
+          border-r backdrop-blur-sm
+          ${theme === "dark" 
+            ? "bg-gradient-to-b from-slate-900 to-gray-900 border-gray-700/50 text-gray-100 shadow-2xl shadow-black/50" 
+            : "bg-gradient-to-b from-white to-gray-50/80 border-gray-200 text-gray-700 shadow-2xl"
+          }
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-          shadow-2xl md:shadow-none
+          md:shadow-lg
         `}
       >
-        <div className="p-6 border-b border-gray-100 md:hidden">
+        <div className={`p-6 border-b md:hidden transition-colors duration-300
+                        ${theme === "dark" ? "border-gray-700/50" : "border-gray-100"}`}>
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold">{theme === "dark" ? "Menu (Dark)" : "Menu"}</h2>
+            <h2 className={`text-lg font-semibold transition-colors duration-300
+                           ${theme === "dark" 
+                             ? "bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400" 
+                             : "text-gray-800"
+                           }`}>
+              {theme === "dark" ? "Menu" : "Menu"}
+            </h2>
             <button
               onClick={toggleSidebar}
-              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-20"
+              className={`p-2 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 hover:scale-110 active:scale-95
+                         ${theme === "dark" 
+                           ? "hover:bg-gray-700 focus:ring-blue-400" 
+                           : "hover:bg-gray-200 focus:ring-indigo-500"
+                         }`}
               aria-label="Close sidebar"
             >
               <svg
@@ -74,17 +90,32 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
                   <button
                     onClick={() => handleClick(item.path)}
                     className={`
-                      w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex items-center space-x-3 group relative overflow-hidden
+                      w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex items-center space-x-3 group relative overflow-hidden focus:outline-none focus:ring-2 focus:ring-opacity-50
                       ${isActive
-                        ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg transform scale-[1.02]"
-                        : "hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-indigo-600 hover:scale-[1.01]"}
+                        ? theme === "dark"
+                          ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/25 transform scale-[1.02] focus:ring-blue-400"
+                          : "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg transform scale-[1.02] focus:ring-indigo-400"
+                        : theme === "dark"
+                          ? "hover:bg-gray-800/70 hover:text-blue-400 hover:scale-[1.01] focus:ring-gray-400"
+                          : "hover:bg-gray-50 hover:text-indigo-600 hover:scale-[1.01] focus:ring-gray-300"
+                      }
                     `}
                   >
-                    <div className={`w-2 h-2 rounded-full transition-all duration-200 ${isActive ? "bg-white" : "bg-gray-400 group-hover:bg-indigo-500"}`} />
+                    <div className={`w-2 h-2 rounded-full transition-all duration-200 
+                                   ${isActive 
+                                     ? "bg-white animate-pulse" 
+                                     : theme === "dark"
+                                       ? "bg-gray-500 group-hover:bg-blue-400"
+                                       : "bg-gray-400 group-hover:bg-indigo-500"
+                                   }`} />
                     <span className="font-medium relative z-10">{item.label}</span>
 
                     {!isActive && (
-                      <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+                      <div className={`absolute inset-0 rounded-xl transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left
+                                     ${theme === "dark" 
+                                       ? "bg-gradient-to-r from-gray-800/50 to-gray-700/50" 
+                                       : "bg-gradient-to-r from-indigo-50 to-purple-50"
+                                     }`} />
                     )}
 
                     {isActive && (
@@ -99,26 +130,31 @@ const Sidebar = ({ sidebarOpen, toggleSidebar }) => {
           </ul>
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 border-t border-gray-100 dark:border-gray-700">
+        <div className={`absolute bottom-0 left-0 right-0 border-t transition-colors duration-300
+                        ${theme === "dark" ? "border-gray-700/50" : "border-gray-100"}`}>
           <div className="p-4 space-y-2">
             <button
               onClick={handleLogout}
-              className="w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex items-center space-x-3 group relative overflow-hidden text-red-600 hover:bg-red-50 dark:hover:bg-red-700 hover:scale-[1.01]"
+              className={`w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex items-center space-x-3 group relative overflow-hidden hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-opacity-50
+                         ${theme === "dark" 
+                           ? "text-red-400 hover:bg-red-900/20 focus:ring-red-400" 
+                           : "text-red-600 hover:bg-red-50 focus:ring-red-300"
+                         }`}
             >
-              <div className="w-2 h-2 rounded-full bg-red-400 group-hover:bg-red-500 transition-all duration-200" />
+              <div className={`w-2 h-2 rounded-full transition-all duration-200
+                             ${theme === "dark" 
+                               ? "bg-red-400 group-hover:bg-red-300" 
+                               : "bg-red-400 group-hover:bg-red-500"
+                             }`} />
               <span className="font-medium relative z-10">Logout</span>
-            </button>
-
-            <button
-              onClick={() => dispatch(toggleTheme())}
-              className="w-full text-left px-4 py-3 rounded-xl transition-all duration-200 flex items-center space-x-3 group relative overflow-hidden bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
-            >
-              <span className="font-medium relative z-10">{theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}</span>
             </button>
           </div>
 
           <div className="text-center pb-3">
-            <p className="text-xs text-gray-500 dark:text-gray-400">JobTracker v1.0</p>
+            <p className={`text-xs transition-colors duration-300
+                          ${theme === "dark" ? "text-gray-500" : "text-gray-500"}`}>
+              JobTracker v1.0
+            </p>
           </div>
         </div>
       </aside>

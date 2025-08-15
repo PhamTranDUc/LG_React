@@ -5,6 +5,19 @@ import { setJobForm, resetJobForm } from "../store/slice/addJobSlice";
 import { addJobApi, updateJobApi } from "../api/index";
 import { JOB_STATUS_MAP, JOB_STATUS_REVERSE_MAP } from "../constants/index";
 import { toast } from "react-toastify";
+import { 
+  Building2, 
+  Briefcase, 
+  User, 
+  Phone, 
+  Mail, 
+  MapPin, 
+  Calendar, 
+  FileText,
+  Save,
+  Plus,
+  Loader2
+} from "lucide-react";
 
 export default function AddJobPage() {
   const location = useLocation();
@@ -140,69 +153,201 @@ export default function AddJobPage() {
     return false;
   };
 
-  const inputBaseClass =
-    "w-full mt-1 p-2 border rounded transition-colors duration-300";
-
-  const inputThemeClass = (disabled) =>
-    disabled
-      ? `bg-gray-200 cursor-not-allowed border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200`
-      : `bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 border-gray-300 dark:border-gray-600`;
+  const formFields = [
+    { 
+      label: "Company", 
+      name: "company", 
+      type: "text", 
+      icon: Building2,
+      placeholder: "Enter company name" 
+    },
+    { 
+      label: "Position", 
+      name: "title", 
+      type: "text", 
+      icon: Briefcase,
+      placeholder: "Enter job position" 
+    },
+    { 
+      label: "Employee Name", 
+      name: "employee", 
+      type: "text", 
+      icon: User,
+      placeholder: "Enter employee name" 
+    },
+    { 
+      label: "Phone Number", 
+      name: "phone", 
+      type: "text", 
+      icon: Phone,
+      placeholder: "Enter phone number" 
+    },
+    { 
+      label: "Email", 
+      name: "email", 
+      type: "email", 
+      icon: Mail,
+      placeholder: "Enter email address" 
+    },
+    { 
+      label: "Location", 
+      name: "location", 
+      type: "text", 
+      icon: MapPin,
+      placeholder: "Enter location" 
+    },
+  ];
 
   return (
-    <div
-      className="flex justify-center mt-5 px-2 transition-colors duration-300"
-      style={{
-        backgroundColor: theme === "dark" ? "#1A202C" : "#F9FAFB",
-      }}
-    >
-      <div
-        className="p-8 rounded-xl shadow-2xl border w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-4xl transition-colors duration-300"
-        style={{
-          backgroundColor: theme === "dark" ? "#2D3748" : "#FFFFFF",
-          borderColor: theme === "dark" ? "#4A5568" : "#E5E7EB",
-          color: theme === "dark" ? "#FFFFFF" : "#1F2937",
-        }}
-      >
-        <h2 className="mb-6 text-2xl font-semibold transition-colors duration-300">
-          {isEditing ? "Edit Job" : "Add Job"}
-        </h2>
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              { label: "Company", name: "company", type: "text" },
-              { label: "Position", name: "title", type: "text" },
-              { label: "Employee Name", name: "employee", type: "text" },
-              { label: "Phone Number", name: "phone", type: "text" },
-              { label: "Email", name: "email", type: "email" },
-              { label: "Location", name: "location", type: "text" },
-            ].map(({ label, name, type }) => (
-              <div className="mb-4" key={name}>
-                <label className="block font-bold">{label}</label>
-                <input
-                  type={type}
-                  name={name}
-                  value={localForm[name]}
-                  onChange={handleChange}
-                  onBlur={() => validateField(name, localForm[name])}
-                  disabled={getDisabled(name)}
-                  className={`${inputBaseClass} ${inputThemeClass(getDisabled(name))}`}
-                  placeholder={`Enter ${label}`}
-                />
-                {errors[name] && (
-                  <p className="text-red-600 text-sm">{errors[name]}</p>
-                )}
-              </div>
-            ))}
+    <div className={`
+      min-h-screen py-8 px-4 transition-all duration-300 relative overflow-hidden
+      ${theme === "dark" 
+        ? "bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800" 
+        : "bg-gradient-to-br from-gray-50 via-white to-gray-100"
+      }
+    `}>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className={`
+          absolute top-20 left-10 w-72 h-72 opacity-20 blur-3xl rounded-full
+          ${theme === "dark" 
+            ? "bg-gradient-to-r from-blue-600 to-purple-600" 
+            : "bg-gradient-to-r from-indigo-400 to-purple-500"
+          }
+        `} />
+        <div className={`
+          absolute bottom-20 right-10 w-96 h-96 opacity-10 blur-3xl rounded-full
+          ${theme === "dark" 
+            ? "bg-gradient-to-r from-purple-600 to-pink-600" 
+            : "bg-gradient-to-r from-purple-400 to-pink-400"
+          }
+        `} />
+      </div>
 
-            {/* Status */}
-            <div className="mb-4">
-              <label className="block font-bold">Status</label>
+      <div className="max-w-4xl mx-auto relative z-10">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className={`
+            inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 transition-all duration-300
+            ${theme === "dark" 
+              ? "bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg shadow-blue-500/25" 
+              : "bg-gradient-to-r from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25"
+            }
+          `}>
+            {isEditing ? (
+              <Save className="w-8 h-8 text-white" />
+            ) : (
+              <Plus className="w-8 h-8 text-white" />
+            )}
+          </div>
+          <h1 className={`
+            text-3xl font-bold mb-2 transition-colors duration-300
+            ${theme === "dark" 
+              ? "text-white" 
+              : "text-gray-900"
+            }
+          `}>
+            {isEditing ? "Edit Job Application" : "Add New Job"}
+          </h1>
+          <p className={`
+            transition-colors duration-300
+            ${theme === "dark" ? "text-gray-400" : "text-gray-600"}
+          `}>
+            {isEditing ? "Update job application details" : "Fill in the details to add a new job application"}
+          </p>
+        </div>
+
+        {/* Form Container */}
+        <div className={`
+          backdrop-blur-sm rounded-2xl border p-8 shadow-2xl transition-all duration-300
+          ${theme === "dark" 
+            ? "bg-slate-800/90 border-gray-700/50 shadow-black/20" 
+            : "bg-white/90 border-gray-200/50 shadow-gray-500/10"
+          }
+        `}>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Main Fields Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {formFields.map(({ label, name, type, icon: Icon, placeholder }) => (
+                <div key={name} className="group">
+                  <label className={`
+                    flex items-center font-semibold mb-3 transition-colors duration-300
+                    ${theme === "dark" ? "text-gray-200" : "text-gray-700"}
+                  `}>
+                    <Icon className={`
+                      w-5 h-5 mr-2 transition-colors duration-300
+                      ${theme === "dark" ? "text-blue-400" : "text-indigo-500"}
+                    `} />
+                    {label}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={type}
+                      name={name}
+                      value={localForm[name]}
+                      onChange={handleChange}
+                      onBlur={() => validateField(name, localForm[name])}
+                      disabled={getDisabled(name)}
+                      placeholder={placeholder}
+                      className={`
+                        w-full px-4 py-3 rounded-xl border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-opacity-50 backdrop-blur-sm
+                        ${getDisabled(name)
+                          ? theme === "dark"
+                            ? "bg-gray-700/50 border-gray-600 text-gray-400 cursor-not-allowed"
+                            : "bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed"
+                          : theme === "dark"
+                            ? "bg-gray-700/70 border-gray-600 text-white placeholder-gray-400 focus:border-blue-400 focus:ring-blue-400 hover:border-gray-500"
+                            : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-indigo-400 focus:ring-indigo-400 hover:border-gray-400"
+                        }
+                      `}
+                    />
+                    {!getDisabled(name) && (
+                      <div className={`
+                        absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300
+                        ${theme === "dark" 
+                          ? "bg-gradient-to-r from-blue-500/5 to-purple-500/5" 
+                          : "bg-gradient-to-r from-indigo-500/5 to-purple-500/5"
+                        }
+                      `} />
+                    )}
+                  </div>
+                  {errors[name] && (
+                    <p className="text-red-500 text-sm mt-2 flex items-center">
+                      <span className="w-1 h-1 bg-red-500 rounded-full mr-2"></span>
+                      {errors[name]}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Status Field */}
+            <div className="group">
+              <label className={`
+                flex items-center font-semibold mb-3 transition-colors duration-300
+                ${theme === "dark" ? "text-gray-200" : "text-gray-700"}
+              `}>
+                <Briefcase className={`
+                  w-5 h-5 mr-2 transition-colors duration-300
+                  ${theme === "dark" ? "text-purple-400" : "text-purple-500"}
+                `} />
+                Status
+              </label>
               <select
                 name="status"
                 value={localForm.status}
                 onChange={handleChange}
                 disabled={getDisabled("status")}
-                className={`${inputBaseClass} ${inputThemeClass(getDisabled("status"))}`}
+                className={`
+                  w-full px-4 py-3 rounded-xl border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-opacity-50 backdrop-blur-sm
+                  ${getDisabled("status")
+                    ? theme === "dark"
+                      ? "bg-gray-700/50 border-gray-600 text-gray-400 cursor-not-allowed"
+                      : "bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed"
+                    : theme === "dark"
+                      ? "bg-gray-700/70 border-gray-600 text-white focus:border-purple-400 focus:ring-purple-400 hover:border-gray-500"
+                      : "bg-white border-gray-300 text-gray-900 focus:border-purple-400 focus:ring-purple-400 hover:border-gray-400"
+                  }
+                `}
               >
                 {(!isEditing && isUser && <option value="Pending">Pending</option>) ||
                   (!isEditing && isAdmin && <option value="Accepted">Accepted</option>) ||
@@ -216,41 +361,113 @@ export default function AddJobPage() {
             </div>
 
             {/* Applied Date */}
-            <div className="mb-4">
-              <label className="block font-bold">Applied Date</label>
+            <div className="group">
+              <label className={`
+                flex items-center font-semibold mb-3 transition-colors duration-300
+                ${theme === "dark" ? "text-gray-200" : "text-gray-700"}
+              `}>
+                <Calendar className={`
+                  w-5 h-5 mr-2 transition-colors duration-300
+                  ${theme === "dark" ? "text-green-400" : "text-green-500"}
+                `} />
+                Applied Date
+              </label>
               <input
                 type="date"
                 name="appliedDate"
                 value={localForm.appliedDate}
                 onChange={handleChange}
                 disabled={getDisabled("appliedDate")}
-                className={`${inputBaseClass} ${inputThemeClass(getDisabled("appliedDate"))}`}
+                className={`
+                  w-full px-4 py-3 rounded-xl border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-opacity-50 backdrop-blur-sm
+                  ${getDisabled("appliedDate")
+                    ? theme === "dark"
+                      ? "bg-gray-700/50 border-gray-600 text-gray-400 cursor-not-allowed"
+                      : "bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed"
+                    : theme === "dark"
+                      ? "bg-gray-700/70 border-gray-600 text-white focus:border-green-400 focus:ring-green-400 hover:border-gray-500"
+                      : "bg-white border-gray-300 text-gray-900 focus:border-green-400 focus:ring-green-400 hover:border-gray-400"
+                  }
+                `}
               />
             </div>
 
             {/* Notes */}
-            <div className="mb-6 md:col-span-2">
-              <label className="block font-bold">Notes</label>
+            <div className="group">
+              <label className={`
+                flex items-center font-semibold mb-3 transition-colors duration-300
+                ${theme === "dark" ? "text-gray-200" : "text-gray-700"}
+              `}>
+                <FileText className={`
+                  w-5 h-5 mr-2 transition-colors duration-300
+                  ${theme === "dark" ? "text-yellow-400" : "text-yellow-500"}
+                `} />
+                Notes
+              </label>
               <textarea
                 name="notes"
                 value={localForm.notes}
                 onChange={handleChange}
                 disabled={getDisabled("notes")}
                 placeholder="e.g. Interview scheduled next Monday..."
-                rows={3}
-                className={`${inputBaseClass} ${inputThemeClass(getDisabled("notes"))} resize-none`}
+                rows={4}
+                className={`
+                  w-full px-4 py-3 rounded-xl border transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-opacity-50 resize-none backdrop-blur-sm
+                  ${getDisabled("notes")
+                    ? theme === "dark"
+                      ? "bg-gray-700/50 border-gray-600 text-gray-400 cursor-not-allowed"
+                      : "bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed"
+                    : theme === "dark"
+                      ? "bg-gray-700/70 border-gray-600 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-yellow-400 hover:border-gray-500"
+                      : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-yellow-400 focus:ring-yellow-400 hover:border-gray-400"
+                  }
+                `}
               />
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-purple-400 text-white p-3 rounded-md font-semibold text-base transition-colors duration-300"
-          >
-            {loading ? "Submitting..." : isEditing ? "Update Job" : "Add Job"}
-          </button>
-        </form>
+            {/* Submit Button */}
+            <div className="pt-4">
+              <button
+                type="submit"
+                disabled={loading}
+                className={`
+                  w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-opacity-50 relative overflow-hidden group
+                  ${loading 
+                    ? theme === "dark"
+                      ? "bg-gray-600 cursor-not-allowed"
+                      : "bg-gray-400 cursor-not-allowed"
+                    : theme === "dark"
+                      ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 focus:ring-blue-400 shadow-lg shadow-blue-500/25"
+                      : "bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 focus:ring-indigo-400 shadow-lg shadow-indigo-500/25"
+                  }
+                  text-white hover:scale-[1.02] active:scale-[0.98] disabled:hover:scale-100
+                `}
+              >
+                {!loading && (
+                  <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                )}
+                
+                <div className="relative z-10 flex items-center justify-center">
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      {isEditing ? (
+                        <Save className="w-5 h-5 mr-2" />
+                      ) : (
+                        <Plus className="w-5 h-5 mr-2" />
+                      )}
+                      {isEditing ? "Update Job" : "Add Job"}
+                    </>
+                  )}
+                </div>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
