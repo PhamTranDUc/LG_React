@@ -1,6 +1,16 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Edit, Trash2, MapPin, Phone, Mail, User, Calendar, FileText, Download } from "lucide-react";
+import {
+  Edit,
+  Trash2,
+  MapPin,
+  Phone,
+  Mail,
+  User,
+  Calendar,
+  FileText,
+  Download,
+} from "lucide-react";
 import { getStatusColor } from "../constants/index";
 import jsPDF from "jspdf";
 
@@ -10,21 +20,38 @@ const JobCard = ({ job, onEdit, onDelete }) => {
   const userEmail = user?.email;
   const role = user?.role;
 
-  const canEdit = role === "ADMIN" || (role === "USER" && job.email === userEmail);
-  const canDelete = role === "ADMIN" || (role === "USER" && job.email === userEmail);
+  const canEdit =
+    role === "ADMIN" || (role === "USER" && job.email === userEmail);
+  const canDelete =
+    role === "ADMIN" || (role === "USER" && job.email === userEmail);
 
   function getStatusPDFColorRGB(status) {
     switch (status?.toLowerCase()) {
       case "applied":
-        return { bg: { r: 52, g: 152, b: 219 }, text: { r: 255, g: 255, b: 255 } };
+        return {
+          bg: { r: 52, g: 152, b: 219 },
+          text: { r: 255, g: 255, b: 255 },
+        };
       case "interviewing":
-        return { bg: { r: 243, g: 156, b: 18 }, text: { r: 255, g: 255, b: 255 } };
+        return {
+          bg: { r: 243, g: 156, b: 18 },
+          text: { r: 255, g: 255, b: 255 },
+        };
       case "offered":
-        return { bg: { r: 39, g: 174, b: 96 }, text: { r: 255, g: 255, b: 255 } };
+        return {
+          bg: { r: 39, g: 174, b: 96 },
+          text: { r: 255, g: 255, b: 255 },
+        };
       case "rejected":
-        return { bg: { r: 231, g: 76, b: 60 }, text: { r: 255, g: 255, b: 255 } };
+        return {
+          bg: { r: 231, g: 76, b: 60 },
+          text: { r: 255, g: 255, b: 255 },
+        };
       default:
-        return { bg: { r: 149, g: 165, b: 166 }, text: { r: 255, g: 255, b: 255 } };
+        return {
+          bg: { r: 149, g: 165, b: 166 },
+          text: { r: 255, g: 255, b: 255 },
+        };
     }
   }
 
@@ -59,7 +86,15 @@ const JobCard = ({ job, onEdit, onDelete }) => {
     const statusBadgeWidth = 60;
     const statusBadgeHeight = 8;
     doc.setFillColor(statusColors.bg.r, statusColors.bg.g, statusColors.bg.b);
-    doc.roundedRect(20, currentY - 2, statusBadgeWidth, statusBadgeHeight, 2, 2, "F");
+    doc.roundedRect(
+      20,
+      currentY - 2,
+      statusBadgeWidth,
+      statusBadgeHeight,
+      2,
+      2,
+      "F"
+    );
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     doc.setTextColor(255, 255, 255);
@@ -156,7 +191,15 @@ const JobCard = ({ job, onEdit, onDelete }) => {
       doc.setFillColor(248, 249, 250);
       doc.setDrawColor(220, 220, 220);
       const notesBoxHeight = 40;
-      doc.roundedRect(20, currentY - 5, pageWidth - 40, notesBoxHeight, 3, 3, "FD");
+      doc.roundedRect(
+        20,
+        currentY - 5,
+        pageWidth - 40,
+        notesBoxHeight,
+        3,
+        3,
+        "FD"
+      );
 
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
@@ -167,7 +210,7 @@ const JobCard = ({ job, onEdit, onDelete }) => {
     }
 
     const footerY = 280;
-    
+
     doc.setDrawColor(200, 200, 200);
     doc.setLineWidth(0.5);
     doc.line(20, footerY, pageWidth - 20, footerY);
@@ -176,13 +219,16 @@ const JobCard = ({ job, onEdit, onDelete }) => {
     doc.setFontSize(9);
     doc.setTextColor(120, 120, 120);
     doc.text(
-      `Job Application Report - Generated on ${new Date().toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`,
+      `Job Application Report - Generated on ${new Date().toLocaleDateString(
+        "en-US",
+        {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }
+      )}`,
       pageWidth / 2,
       footerY + 8,
       { align: "center" }
@@ -197,8 +243,12 @@ const JobCard = ({ job, onEdit, onDelete }) => {
       { align: "center" }
     );
 
-    const fileName = `JobApplication_${job.title.replace(/[^a-z0-9]/gi, "_")}_${job.company
-      .replace(/[^a-z0-9]/gi, "_")}_${new Date().toISOString().split('T')[0]}.pdf`;
+    const fileName = `JobApplication_${job.title.replace(
+      /[^a-z0-9]/gi,
+      "_"
+    )}_${job.company.replace(/[^a-z0-9]/gi, "_")}_${
+      new Date().toISOString().split("T")[0]
+    }.pdf`;
     doc.save(fileName);
   };
 
@@ -206,9 +256,10 @@ const JobCard = ({ job, onEdit, onDelete }) => {
     <div
       className={`
       rounded-xl border backdrop-blur-sm p-6 transition-all duration-300 flex flex-col h-full group relative overflow-hidden hover:scale-[1.02] transform
-      ${theme === "dark"
-        ? "bg-gradient-to-br from-slate-800/90 to-gray-800/90 border-gray-700/50 shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30"
-        : "bg-gradient-to-br from-white/90 to-gray-50/90 border-gray-200/50 shadow-lg shadow-gray-500/10 hover:shadow-xl hover:shadow-gray-500/20"
+      ${
+        theme === "dark"
+          ? "bg-gradient-to-br from-slate-800/90 to-gray-800/90 border-gray-700/50 shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30"
+          : "bg-gradient-to-br from-white/90 to-gray-50/90 border-gray-200/50 shadow-lg shadow-gray-500/10 hover:shadow-xl hover:shadow-gray-500/20"
       }
     `}
     >
@@ -217,12 +268,22 @@ const JobCard = ({ job, onEdit, onDelete }) => {
           <h3
             className={`
             text-lg font-semibold mb-1 truncate transition-colors duration-300
-            ${theme === "dark" ? "text-white group-hover:text-blue-400" : "text-gray-900 group-hover:text-indigo-600"}
+            ${
+              theme === "dark"
+                ? "text-white group-hover:text-blue-400"
+                : "text-gray-900 group-hover:text-indigo-600"
+            }
           `}
           >
             {job.title}
           </h3>
-          <p className={`${theme === "dark" ? "text-gray-300" : "text-gray-600"} truncate`}>{job.company}</p>
+          <p
+            className={`${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            } truncate`}
+          >
+            {job.company}
+          </p>
         </div>
         <div className="ml-3 flex-shrink-0">
           <span
@@ -236,7 +297,12 @@ const JobCard = ({ job, onEdit, onDelete }) => {
         </div>
       </div>
 
-      <div className="space-y-2.5 text-sm mb-4 relative z-10 flex-1">
+      <div
+        className={`
+    space-y-2.5 text-sm mb-4 relative z-10 flex-1
+    ${theme === "dark" ? "text-gray-300" : "text-gray-700"}
+  `}
+      >
         {job.employee && (
           <div className="flex items-center">
             <User className="w-4 h-4 mr-3" /> {job.employee}
@@ -270,16 +336,25 @@ const JobCard = ({ job, onEdit, onDelete }) => {
       </div>
 
       <div className="mt-auto flex justify-end space-x-2">
-        <button onClick={generatePDF} className="bg-green-600 text-white px-3 py-2 rounded-lg flex items-center hover:bg-green-700 transition-colors">
+        <button
+          onClick={generatePDF}
+          className="bg-green-600 text-white px-3 py-2 rounded-lg flex items-center hover:bg-green-700 transition-colors"
+        >
           <Download className="w-4 h-4 mr-1" /> PDF
         </button>
         {canEdit && (
-          <button onClick={() => onEdit(job)} className="bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center hover:bg-blue-700 transition-colors">
+          <button
+            onClick={() => onEdit(job)}
+            className="bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center hover:bg-blue-700 transition-colors"
+          >
             <Edit className="w-4 h-4 mr-1" /> Edit
           </button>
         )}
         {canDelete && (
-          <button onClick={() => onDelete(job.id)} className="bg-red-600 text-white px-3 py-2 rounded-lg flex items-center hover:bg-red-700 transition-colors">
+          <button
+            onClick={() => onDelete(job.id)}
+            className="bg-red-600 text-white px-3 py-2 rounded-lg flex items-center hover:bg-red-700 transition-colors"
+          >
             <Trash2 className="w-4 h-4 mr-1" /> Delete
           </button>
         )}
